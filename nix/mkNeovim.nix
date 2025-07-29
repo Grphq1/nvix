@@ -11,6 +11,7 @@
 }:
 with lib;
   {
+    environmentVariables ? {},
     # NVIM_APPNAME - Defaults to 'nvim' if not set.
     # If set to something else, this will also rename the binary.
     appName ? null,
@@ -172,6 +173,8 @@ with lib;
       # Set the LIBSQLITE environment variable if sqlite is enabled
       ++ (optional withSqlite
         ''--set LIBSQLITE "${sqliteLibPath}"'')
+        # Add environment variables from the environmentVariables argument
+      ++ (lib.mapAttrsToList (k: v: ''--set ${k} "${v}"'') environmentVariables)
     );
 
     luaPackages = neovim-unwrapped.lua.pkgs;

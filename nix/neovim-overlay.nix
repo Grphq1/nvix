@@ -83,6 +83,8 @@ with final.pkgs.lib; let
     # (mkNvimPlugin inputs.wf-nvim "wf.nvim") # (example) keymap hints | https://github.com/Cassin01/wf.nvim
     # ^ bleeding-edge plugins from flake inputs
     which-key-nvim
+    # colorscheme
+    jellybeans-nvim
   ];
 
   extraPackages = with pkgs; [
@@ -90,6 +92,8 @@ with final.pkgs.lib; let
     lua-language-server
     nil # nix LSP
     typescript-language-server
+    vue-language-server
+    typescript
   ];
 in {
   # This is the neovim derivation
@@ -97,6 +101,10 @@ in {
   nvim-pkg = mkNeovim {
     plugins = all-plugins;
     inherit extraPackages;
+    environmentVariables = {
+      VUE_TSDK = "${pkgs.typescript}/lib/node_modules/typescript/lib";
+      VUE_TYPESCRIPT_PLUGIN = "${pkgs.vue-language-server}/lib/node_modules/@vue/language-server";
+    };
   };
 
   # This is meant to be used within a devshell.
@@ -107,6 +115,10 @@ in {
     inherit extraPackages;
     appName = "nvim-dev";
     wrapRc = false;
+    environmentVariables = {
+      VUE_TSDK = "${pkgs.typescript}/lib/node_modules/typescript/lib";
+      VUE_TYPESCRIPT_PLUGIN = "${pkgs.vue-language-server}/lib/node_modules/@vue/language-server";
+    };
   };
 
   # This can be symlinked in the devShell's shellHook
