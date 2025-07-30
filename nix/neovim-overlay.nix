@@ -98,6 +98,9 @@ with final.pkgs.lib; let
     typescript-language-server
     vue-language-server
     typescript
+    # js formatter/linter
+    vscode-langservers-extracted
+    eslint
   ];
 in {
   # This is the neovim derivation
