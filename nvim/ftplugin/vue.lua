@@ -1,3 +1,5 @@
+local eslint = require('user.lsp.eslint')
+
 vim.lsp.start {
   name = "ts_ls",
   cmd = { "typescript-language-server", "--stdio" },
@@ -24,3 +26,5 @@ vim.lsp.start {
     }
   }
 }
+
+eslint.setup()
