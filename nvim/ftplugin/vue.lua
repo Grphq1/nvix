@@ -10,13 +10,14 @@ vim.lsp.start {
   }
 }
 
+
 vim.lsp.start {
   name = "volar",
   cmd = { "vue-language-server", "--stdio" },
   filetypes = { "vue", "javascript", "typescript", "javascriptreact", "typescriptreact" },
   init_options = {
     vue = {
-      hybridMode = false
+      hybridMode = true
     },
     typescript = {
       tsdk = vim.env.VUE_TSDK
