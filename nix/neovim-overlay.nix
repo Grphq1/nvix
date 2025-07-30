@@ -60,6 +60,8 @@ with final.pkgs.lib; let
     nvim-navic # Add LSP location to lualine | https://github.com/SmiteshP/nvim-navic
     statuscol-nvim # Status column | https://github.com/luukvbaal/statuscol.nvim/
     nvim-treesitter-context # nvim-treesitter-context
+    nvim-tree-lua
+    bufferline-nvim
     # ^ UI
     # language support
     # ^ language support
@@ -72,6 +74,7 @@ with final.pkgs.lib; let
     # ^ navigation/editing enhancement plugins
     # Useful utilities
     nvim-unception # Prevent nested neovim sessions | nvim-unception
+    trouble-nvim
     # ^ Useful utilities
     # libraries that other plugins depend on
     sqlite-lua
