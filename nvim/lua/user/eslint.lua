@@ -4,18 +4,6 @@ M.setup = function()
   vim.lsp.start {
     name = "eslint",
     cmd = { "vscode-eslint-language-server", "--stdio" },
-    filetypes = {
-      "javascript",
-      "javascriptreact",
-      "javascript.jsx",
-      "typescript",
-      "typescriptreact",
-      "typescript.tsx",
-      "vue",
-      "svelte",
-      "astro",
-      "htmlangular",
-    },
     on_attach = function(client, bufnr)
       if client.name == "eslint" then
         vim.api.nvim_buf_create_user_command(bufnr, 'LspEslintFixAll', function()
@@ -42,16 +30,16 @@ M.setup = function()
         })
       end
     end,
-    handlers = {
-      ["eslint/confirmESLintExecution"] = function(...) end,
-      ["eslint/noLibrary"] = function(...) end,
-      ["eslint/openDoc"] = function(...) end,
-      ["eslint/probeFailed"] = function(...) end,
-    },
-    root_dir = vim.fs.dirname(vim.fs.find(
-      { ".eslintrc", ".eslintrc.js", ".eslintrc.json", ".eslintrc.yml", ".eslintrc.yaml" },
-      { upward = true }
-    )[1]) or vim.loop.cwd(),
+    -- handlers = {
+    --   ["eslint/confirmESLintExecution"] = function(...) end,
+    --   ["eslint/noLibrary"] = function(...) end,
+    --   ["eslint/openDoc"] = function(...) end,
+    --   ["eslint/probeFailed"] = function(...) end,
+    -- },
+    -- root_dir = vim.fs.dirname(vim.fs.find(
+    --   { ".eslintrc", ".eslintrc.js", ".eslintrc.json", ".eslintrc.yml", ".eslintrc.yaml" },
+    --   { upward = true }
+    -- )[1]) or vim.loop.cwd(),
     settings = {
       codeAction = {
         disableRuleComment = { enable = true, location = "separateLine" },

@@ -1,4 +1,4 @@
-local eslint = require('user.lsp.eslint')
+local eslint = require('user.eslint')
 
 vim.lsp.start {
   name = "ts_ls",
