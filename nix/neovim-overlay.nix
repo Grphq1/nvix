@@ -16,8 +16,8 @@ with final.pkgs.lib; let
 
   # This is the helper function that builds the Neovim derivation.
   mkNeovim = pkgs.callPackage ./mkNeovim.nix {
-      inherit (pkgs-locked) wrapNeovimUnstable neovimUtils;
-    };
+    inherit (pkgs-locked) wrapNeovimUnstable neovimUtils;
+  };
 
   # A plugin can either be a package or an attrset, such as
   # { plugin = <plugin>; # the package, e.g. pkgs.vimPlugins.nvim-cmp
@@ -88,19 +88,25 @@ with final.pkgs.lib; let
     which-key-nvim
     # colorscheme
     jellybeans-nvim
+    # Formatters
+    conform-nvim
+    # ^ Formatters
   ];
 
   extraPackages = with pkgs; [
     ripgrep
-    # language servers, etc.
+    # language servers
     lua-language-server
-    nil # nix LSP
+    nil
     typescript-language-server
     vue-language-server
     typescript
-    # js formatter/linter
+    # formatter/linter
     vscode-langservers-extracted
     eslint
+    nodePackages.prettier
+    stylua
+    alejandra
   ];
 in {
   # This is the neovim derivation
