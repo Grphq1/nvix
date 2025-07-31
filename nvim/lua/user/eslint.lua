@@ -30,16 +30,16 @@ M.setup = function()
         })
       end
     end,
-    -- handlers = {
-    --   ["eslint/confirmESLintExecution"] = function(...) end,
-    --   ["eslint/noLibrary"] = function(...) end,
-    --   ["eslint/openDoc"] = function(...) end,
-    --   ["eslint/probeFailed"] = function(...) end,
-    -- },
-    -- root_dir = vim.fs.dirname(vim.fs.find(
-    --   { ".eslintrc", ".eslintrc.js", ".eslintrc.json", ".eslintrc.yml", ".eslintrc.yaml" },
-    --   { upward = true }
-    -- )[1]) or vim.loop.cwd(),
+    handlers = {
+      ["eslint/confirmESLintExecution"] = function(...) end,
+      ["eslint/noLibrary"] = function(...) end,
+      ["eslint/openDoc"] = function(...) end,
+      ["eslint/probeFailed"] = function(...) end,
+    },
+    root_dir = vim.fs.dirname(vim.fs.find(
+      { ".eslintrc", ".eslintrc.js", ".eslintrc.json", ".eslintrc.yml", ".eslintrc.yaml" },
+      { upward = true }
+    )[1]) or vim.loop.cwd(),
     settings = {
       codeAction = {
         disableRuleComment = { enable = true, location = "separateLine" },
