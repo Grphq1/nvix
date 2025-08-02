@@ -1,30 +1,33 @@
 local eslint = require('user.eslint')
+local tailwindcss = require('user.tailwindcss')
 
 vim.lsp.start {
-  name = "ts_ls",
-  cmd = { "typescript-language-server", "--stdio" },
+  name = 'ts_ls',
+  cmd = { 'typescript-language-server', '--stdio' },
   init_options = {
-    plugins = { {
-      name = "@vue/typescript-plugin",
-      location = vim.env.VUE_TYPESCRIPT_PLUGIN,
-      languages = { "vue" }
-    } }
-  }
+    plugins = {
+      {
+        name = '@vue/typescript-plugin',
+        location = vim.env.VUE_TYPESCRIPT_PLUGIN,
+        languages = { 'vue' },
+      },
+    },
+  },
 }
 
-
 vim.lsp.start {
-  name = "volar",
-  cmd = { "vue-language-server", "--stdio" },
-  filetypes = { "vue", "javascript", "typescript", "javascriptreact", "typescriptreact" },
+  name = 'volar',
+  cmd = { 'vue-language-server', '--stdio' },
+  filetypes = { 'vue', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
   init_options = {
     vue = {
-      hybridMode = true
+      hybridMode = true,
     },
     typescript = {
-      tsdk = vim.env.VUE_TSDK
-    }
-  }
+      tsdk = vim.env.VUE_TSDK,
+    },
+  },
 }
 
+tailwindcss.setup()
 eslint.setup()
