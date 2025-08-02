@@ -10,6 +10,8 @@ with final.pkgs.lib; let
       version = src.lastModifiedDate;
     };
 
+  tailwindcss-language-server = pkgs.callPackage ../pkgs/tailwindcss-language-server.nix {};
+
   # Make sure we use the pinned nixpkgs instance for wrapNeovimUnstable,
   # otherwise it could have an incompatible signature when applying this overlay.
   pkgs-locked = inputs.nixpkgs.legacyPackages.${pkgs.system};
@@ -71,6 +73,7 @@ with final.pkgs.lib; let
     nvim-surround # https://github.com/kylechui/nvim-surround/
     nvim-treesitter-textobjects # https://github.com/nvim-treesitter/nvim-treesitter-textobjects/
     nvim-ts-context-commentstring # https://github.com/joosepalviste/nvim-ts-context-commentstring/
+    nvim-bufdel
     # ^ navigation/editing enhancement plugins
     # Useful utilities
     nvim-unception # Prevent nested neovim sessions | nvim-unception
@@ -101,6 +104,7 @@ with final.pkgs.lib; let
     typescript-language-server
     vue-language-server
     typescript
+    tailwindcss-language-server
     # formatter/linter
     vscode-langservers-extracted
     eslint
