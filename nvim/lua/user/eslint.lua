@@ -2,17 +2,17 @@ local M = {}
 
 M.setup = function()
   vim.lsp.start {
-    name = "eslint",
-    cmd = { "vscode-eslint-language-server", "--stdio" },
+    name = 'eslint',
+    cmd = { 'vscode-eslint-language-server', '--stdio' },
     on_attach = function(client, bufnr)
-      if client.name == "eslint" then
+      if client.name == 'eslint' then
         vim.api.nvim_buf_create_user_command(bufnr, 'LspEslintFixAll', function()
           if client.is_stopped() then
-            vim.notify("LSP client is not active", vim.log.levels.WARN)
+            vim.notify('LSP client is not active', vim.log.levels.WARN)
             return
           end
           local version = vim.lsp.util.buf_versions[bufnr] or 0
-          vim.lsp.buf.execute_command({
+          vim.lsp.buf.execute_command {
             command = 'eslint.applyAllFixes',
             arguments = {
               {
@@ -20,9 +20,9 @@ M.setup = function()
                 version = version,
               },
             },
-          })
+          }
         end, {})
-        vim.api.nvim_create_autocmd("BufWritePre", {
+        vim.api.nvim_create_autocmd('BufWritePre', {
           buffer = bufnr,
           callback = function()
             vim.cmd('LspEslintFixAll')
@@ -31,32 +31,42 @@ M.setup = function()
       end
     end,
     handlers = {
-      ["eslint/confirmESLintExecution"] = function(...) end,
-      ["eslint/noLibrary"] = function(...) end,
-      ["eslint/openDoc"] = function(...) end,
-      ["eslint/probeFailed"] = function(...) end,
+      ['eslint/confirmESLintExecution'] = function(...)
+        return {}
+      end,
+      ['eslint/noLibrary'] = function(...)
+        return {}
+      end,
+      ['eslint/openDoc'] = function(...)
+        return {}
+      end,
+      ['eslint/probeFailed'] = function(...)
+        return {}
+      end,
     },
-    root_dir = vim.fs.dirname(vim.fs.find(
-      { ".eslintrc", ".eslintrc.js", ".eslintrc.json", ".eslintrc.yml", ".eslintrc.yaml" },
-      { upward = true }
-    )[1]) or vim.loop.cwd(),
+    root_dir = vim.fs.dirname(
+      vim.fs.find(
+        { '.eslintrc', '.eslintrc.js', '.eslintrc.json', '.eslintrc.yml', '.eslintrc.yaml' },
+        { upward = true }
+      )[1]
+    ) or vim.loop.cwd(),
     settings = {
       codeAction = {
-        disableRuleComment = { enable = true, location = "separateLine" },
+        disableRuleComment = { enable = true, location = 'separateLine' },
         showDocumentation = { enable = true },
       },
-      codeActionOnSave = { enable = true, mode = "all" },
+      codeActionOnSave = { enable = true, mode = 'all' },
       experimental = { useFlatConfig = false },
       format = true,
-      nodePath = "",
-      onIgnoredFiles = "off",
+      nodePath = '',
+      onIgnoredFiles = 'off',
       problems = { shortenToSingleLine = false },
       quiet = false,
       rulesCustomizations = {},
-      run = "onType",
+      run = 'onType',
       useESLintClass = false,
-      validate = "on",
-      workingDirectory = { mode = "location" },
+      validate = 'on',
+      workingDirectory = { mode = 'location' },
     },
   }
 end
