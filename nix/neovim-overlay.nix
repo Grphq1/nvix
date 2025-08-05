@@ -94,6 +94,7 @@ with final.pkgs.lib; let
     # Formatters
     conform-nvim
     # ^ Formatters
+    vim-wakatime
   ];
 
   extraPackages = with pkgs; [
