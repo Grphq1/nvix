@@ -28,10 +28,11 @@ opt.expandtab = true
 opt.tabstop = 2
 opt.softtabstop = 2
 opt.shiftwidth = 2
+opt.clipboard = 'unnamedplus'
 
 opt.foldenable = true
-opt.foldmethod = "expr"
-opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+opt.foldmethod = 'expr'
+opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 1
 
@@ -100,4 +101,4 @@ cmd.packadd('cfilter') -- Allows filtering the quickfix list with :cfdo
 -- let sqlite.lua (which some plugins depend on) know where to find sqlite
 vim.g.sqlite_clib_path = require('luv').os_getenv('LIBSQLITE')
 
-vim.cmd("colorscheme jellybeans-nvim")
+vim.cmd('colorscheme jellybeans-nvim')
