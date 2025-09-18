@@ -29,4 +29,8 @@ require('avante').setup {
       incoming = 'DiffAdd',
     },
   },
+  windows = {
+    position = 'right',
+    width = 30,
+  },
 }
