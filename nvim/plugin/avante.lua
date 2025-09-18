@@ -12,13 +12,13 @@ require('avante').setup {
   openai = {
     endpoint = 'https://api.avalapis.ir/v1',
     temperature = 0.7,
-    model = 'gpt-4o-mini-2024-07-18',
+    model = 'o4-mini',
     max_tokens = 4096,
   },
 
   claude = {
-    endpoint = 'https://api.avalai.ir',
-    model = 'anthropic.claude-sonnet-4-20250514-v1:0',
+    endpoint = 'https://api.avalapis.ir',
+    model = 'anthropic.claude-3-7-sonnet-20250219-v1:0',
     temperature = 0.7,
     max_tokens = 4096,
   },
