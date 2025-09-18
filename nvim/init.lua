@@ -34,7 +34,7 @@ opt.foldenable = true
 opt.foldmethod = 'expr'
 opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.opt.foldlevel = 99
-vim.opt.foldlevelstart = 1
+-- vim.opt.foldlevelstart = 99
 
 opt.history = 2000
 opt.nrformats = 'bin,hex' -- 'octal'
@@ -45,6 +45,9 @@ opt.cmdheight = 0
 
 opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 opt.colorcolumn = '100'
+
+-- enable bidi
+opt.termbidi = true
 
 -- Configure Neovim diagnostic messages
 
