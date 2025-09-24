@@ -2,7 +2,6 @@ vim.bo.comments = ':---,:--'
 
 local lua_ls_cmd = 'lua-language-server'
 
--- Check if lua-language-server is available
 if vim.fn.executable(lua_ls_cmd) ~= 1 then
   return
 end
