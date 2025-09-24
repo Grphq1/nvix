@@ -99,6 +99,7 @@ with final.pkgs.lib; let
     which-key-nvim
     # colorscheme
     jellybeans-nvim
+    github-nvim-theme
     # Formatters
     conform-nvim
     # ^ Formatters

@@ -43,6 +43,8 @@ opt.splitright = true
 opt.splitbelow = true
 opt.cmdheight = 0
 
+opt.termguicolors = true
+
 opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 opt.colorcolumn = '100'
 
@@ -104,4 +106,4 @@ cmd.packadd('cfilter') -- Allows filtering the quickfix list with :cfdo
 -- let sqlite.lua (which some plugins depend on) know where to find sqlite
 vim.g.sqlite_clib_path = require('luv').os_getenv('LIBSQLITE')
 
-vim.cmd('colorscheme jellybeans-nvim')
+vim.cmd('colorscheme github_dark_colorblind')
