@@ -6,8 +6,8 @@ vim.g.did_load_avante_plugin = true
 require('avante_lib').load()
 require('avante').setup {
   debug = false,
-  provider = 'mistral_codestral',
-  auto_suggestions_provider = 'mistral_codestral',
+  provider = 'mistral',
+  auto_suggestions_provider = 'mistral',
 
   providers = {
     openai = {
@@ -15,7 +15,7 @@ require('avante').setup {
       model = 'o4-mini',
     },
 
-    mistral_codestral = {
+    mistral = {
       __inherited_from = 'openai',
       api_key_name = 'MISTRAL_API_KEY',
       endpoint = 'https://api.mistral.ai/v1',
