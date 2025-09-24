@@ -32,7 +32,15 @@ with final.pkgs.lib; let
   all-plugins = with pkgs.vimPlugins; [
     # plugins from nixpkgs go in here.
     # https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=vimPlugins
-    nvim-treesitter.withAllGrammars
+    nvim-treesitter-parsers.vue
+    nvim-treesitter-parsers.typescript
+    nvim-treesitter-parsers.javascript
+    nvim-treesitter-parsers.css
+    nvim-treesitter-parsers.scss
+    nvim-treesitter-parsers.json
+    nvim-treesitter-parsers.html
+    nvim-treesitter-parsers.lua
+    nvim-treesitter-parsers.tsx
     luasnip # snippets | https://github.com/l3mon4d3/luasnip/
     # nvim-cmp (autocompletion) and extensions
     nvim-cmp # https://github.com/hrsh7th/nvim-cmp
