@@ -10,8 +10,6 @@ with final.pkgs.lib; let
       version = src.lastModifiedDate;
     };
 
-  tailwindcss-language-server = pkgs.callPackage ../pkgs/tailwindcss-language-server.nix {};
-
   # Make sure we use the pinned nixpkgs instance for wrapNeovimUnstable,
   # otherwise it could have an incompatible signature when applying this overlay.
   pkgs-locked = inputs.nixpkgs.legacyPackages.${pkgs.system};
