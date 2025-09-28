@@ -45,6 +45,10 @@ opt.cmdheight = 0
 
 opt.termguicolors = true
 
+-- make spaces and tabs visible
+opt.list = true
+opt.listchars = 'space:.,tab:>#,trail:~'
+
 opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 opt.colorcolumn = '100'
 
