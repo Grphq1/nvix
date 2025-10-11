@@ -105,6 +105,7 @@ with final.pkgs.lib; let
 
     # ai
     avante-nvim
+    copilot-vim
   ];
 
   extraPackages = with pkgs; [
