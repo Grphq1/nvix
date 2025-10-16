@@ -4,6 +4,7 @@ local tailwindcss = require('user.tailwindcss')
 vim.lsp.start {
   name = 'ts_ls',
   cmd = { 'typescript-language-server', '--stdio' },
+  root_dir = vim.fs.root(0, { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' }),
   init_options = {
     plugins = {
       {
@@ -18,10 +19,10 @@ vim.lsp.start {
 vim.lsp.start {
   name = 'volar',
   cmd = { 'vue-language-server', '--stdio' },
-  filetypes = { 'vue', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
+  root_dir = vim.fs.root(0, { 'package.json', 'vue.config.js', 'nuxt.config.js', '.git' }),
   init_options = {
     vue = {
-      hybridMode = true,
+      hybridMode = false,
     },
     typescript = {
       tsdk = vim.env.VUE_TSDK,

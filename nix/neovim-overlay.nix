@@ -3,6 +3,37 @@
 with final.pkgs.lib; let
   pkgs = final;
 
+  # Fix the broken vue-language-server package
+  fixed-vue-language-server = pkgs.vue-language-server.overrideAttrs (oldAttrs: {
+    preInstall = ''
+      # the mv commands are workaround for https://github.com/pnpm/pnpm/issues/8307
+      mv packages packages.dontpruneme
+      CI=true pnpm prune --prod
+      find packages.dontpruneme/**/node_modules -xtype l -delete
+      mv packages.dontpruneme packages
+
+      find -type f \( -name "*.ts" -o -name "*.map" \) -exec rm -rf {} +
+
+      # FIX: Don't delete all symlinks - only delete broken ones
+      # The original command breaks @volar/language-server dependency resolution
+      # find node_modules packages/language-server/node_modules -xtype l -delete
+      
+      # Instead, only remove broken symlinks (pointing to non-existent targets)
+      find node_modules packages/language-server/node_modules -xtype l 2>/dev/null | while read link; do
+        if [ ! -e "$link" ]; then
+          rm -f "$link"
+        fi
+      done
+
+      # remove non-deterministic files
+      rm -f node_modules/.modules.yaml node_modules/.pnpm-workspace-state-v1.json
+    '';
+    
+    meta = oldAttrs.meta // {
+      description = "Official Vue.js language server (fixed for pnpm workspace dependencies)";
+    };
+  });
+
   # Use this to create a plugin from a flake input
   # mkNvimPlugin = src: pname:
   #   pkgs.vimUtils.buildVimPlugin {
@@ -114,7 +145,7 @@ with final.pkgs.lib; let
     lua-language-server
     nil
     typescript-language-server
-    vue-language-server
+    fixed-vue-language-server  # Using fixed version
     typescript
     tailwindcss-language-server
     # formatter/linter
@@ -132,7 +163,7 @@ in {
     inherit extraPackages;
     environmentVariables = {
       VUE_TSDK = "${pkgs.typescript}/lib/node_modules/typescript/lib";
-      VUE_TYPESCRIPT_PLUGIN = "${pkgs.vue-language-server}/lib/node_modules/@vue/language-server";
+      VUE_TYPESCRIPT_PLUGIN = "${fixed-vue-language-server}/lib/language-tools/node_modules/.pnpm/node_modules/@vue/language-server";
     };
   };
 
@@ -146,7 +177,7 @@ in {
     wrapRc = false;
     environmentVariables = {
       VUE_TSDK = "${pkgs.typescript}/lib/node_modules/typescript/lib";
-      VUE_TYPESCRIPT_PLUGIN = "${pkgs.vue-language-server}/lib/node_modules/@vue/language-server";
+      VUE_TYPESCRIPT_PLUGIN = "${fixed-vue-language-server}/lib/language-tools/node_modules/.pnpm/node_modules/@vue/language-server";
     };
   };
 
