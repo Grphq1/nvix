@@ -2,21 +2,37 @@ if vim.g.did_load_nvim_tree_plugin then
   return
 end
 
+vim.g.did_load_nvim_tree_plugin = true
+
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 vim.opt.termguicolors = true
 
-require("nvim-tree").setup {
-  sync_root_with_cwd = true,
-  respect_buf_cwd = true,
+vim.api.nvim_create_autocmd('VimEnter', {
+  once = true,
+  callback = function()
+    vim.schedule(function()
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        local name = vim.api.nvim_buf_get_name(buf)
+        if name:match('NvimTree') then
+          pcall(vim.api.nvim_buf_delete, buf, { force = true })
+        end
+      end
+    end)
+  end,
+})
+
+require('nvim-tree').setup {
+  sync_root_with_cwd = false,
+  respect_buf_cwd = false,
   update_focused_file = {
     enable = true,
-    update_root = true,
+    update_root = false,
   },
 
   renderer = {
-    root_folder_label = ":~:s?$?",
+    root_folder_label = ':~:s?$?',
     indent_markers = {
       enable = true,
     },
@@ -44,10 +60,10 @@ require("nvim-tree").setup {
 
   view = {
     width = 40,
-    side = "left",
+    side = 'left',
     number = false,
     relativenumber = false,
-    signcolumn = "yes",
+    signcolumn = 'yes',
   },
 
   filesystem_watchers = {
@@ -56,4 +72,4 @@ require("nvim-tree").setup {
   },
 }
 
-vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { silent = true })
