@@ -9,7 +9,6 @@ neogit.setup {
   disable_builtin_notifications = true,
   disable_insert_on_commit = 'auto',
   integrations = {
-    diffview = true,
     telescope = true,
     fzf_lua = true,
   },

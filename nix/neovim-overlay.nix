@@ -17,7 +17,7 @@ with final.pkgs.lib; let
       # FIX: Don't delete all symlinks - only delete broken ones
       # The original command breaks @volar/language-server dependency resolution
       # find node_modules packages/language-server/node_modules -xtype l -delete
-      
+
       # Instead, only remove broken symlinks (pointing to non-existent targets)
       find node_modules packages/language-server/node_modules -xtype l 2>/dev/null | while read link; do
         if [ ! -e "$link" ]; then
@@ -28,10 +28,12 @@ with final.pkgs.lib; let
       # remove non-deterministic files
       rm -f node_modules/.modules.yaml node_modules/.pnpm-workspace-state-v1.json
     '';
-    
-    meta = oldAttrs.meta // {
-      description = "Official Vue.js language server (fixed for pnpm workspace dependencies)";
-    };
+
+    meta =
+      oldAttrs.meta
+      // {
+        description = "Official Vue.js language server (fixed for pnpm workspace dependencies)";
+      };
   });
 
   # Use this to create a plugin from a flake input
@@ -84,7 +86,6 @@ with final.pkgs.lib; let
     cmp-cmdline-history # cmp command line history suggestions
     # ^ nvim-cmp extensions
     # git integration plugins
-    diffview-nvim # https://github.com/sindrets/diffview.nvim/
     neogit # https://github.com/TimUntersberger/neogit/
     gitsigns-nvim # https://github.com/lewis6991/gitsigns.nvim/
     vim-fugitive # https://github.com/tpope/vim-fugitive/
@@ -145,7 +146,7 @@ with final.pkgs.lib; let
     lua-language-server
     nil
     typescript-language-server
-    fixed-vue-language-server  # Using fixed version
+    fixed-vue-language-server # Using fixed version
     typescript
     tailwindcss-language-server
     # formatter/linter
