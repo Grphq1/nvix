@@ -1,56 +1,53 @@
 local M = {}
 
+local customizations = {
+  { rule = 'style/*', severity = 'off', fixable = true },
+  { rule = 'format/*', severity = 'off', fixable = true },
+  { rule = '*-indent', severity = 'off', fixable = true },
+  { rule = '*-spacing', severity = 'off', fixable = true },
+  { rule = '*-spaces', severity = 'off', fixable = true },
+  { rule = '*-order', severity = 'off', fixable = true },
+  { rule = '*-dangle', severity = 'off', fixable = true },
+  { rule = '*-newline', severity = 'off', fixable = true },
+  { rule = '*quotes', severity = 'off', fixable = true },
+  { rule = '*semi', severity = 'off', fixable = true },
+}
+
 M.setup = function()
   vim.lsp.start {
     name = 'eslint',
     cmd = { 'vscode-eslint-language-server', '--stdio' },
     on_attach = function(client, bufnr)
-      if client.name == 'eslint' then
-        vim.api.nvim_buf_create_user_command(bufnr, 'LspEslintFixAll', function()
-          if client.is_stopped() then
-            vim.notify('LSP client is not active', vim.log.levels.WARN)
-            return
-          end
-          local version = vim.lsp.util.buf_versions[bufnr] or 0
-          vim.lsp.buf.execute_command {
-            command = 'eslint.applyAllFixes',
-            arguments = {
-              {
-                uri = vim.uri_from_bufnr(bufnr),
-                version = version,
-              },
-            },
-          }
-        end, {})
+      if client.supports_method('textDocument/formatting') then
+        vim.api.nvim_clear_autocmds { group = 'EslintFixAll', buffer = bufnr }
         vim.api.nvim_create_autocmd('BufWritePre', {
+          group = 'EslintFixAll',
           buffer = bufnr,
           callback = function()
-            vim.cmd('LspEslintFixAll')
+            vim.lsp.buf.format {
+              bufnr = bufnr,
+              filter = function(c)
+                return c.name == 'eslint'
+              end,
+              timeout_ms = 5000,
+              async = false,
+            }
           end,
         })
       end
     end,
-    handlers = {
-      ['eslint/confirmESLintExecution'] = function(...)
-        return {}
-      end,
-      ['eslint/noLibrary'] = function(...)
-        return {}
-      end,
-      ['eslint/openDoc'] = function(...)
-        return {}
-      end,
-      ['eslint/probeFailed'] = function(...)
-        return {}
-      end,
-    },
-    root_dir = vim.fs.dirname(
-      vim.fs.find(
-        { '.eslintrc', '.eslintrc.js', '.eslintrc.json', '.eslintrc.yml', '.eslintrc.yaml' },
-        { upward = true }
-      )[1]
-    ) or vim.loop.cwd(),
+    root_dir = vim.fs.dirname(vim.fs.find({
+      '.eslintrc',
+      '.eslintrc.js',
+      '.eslintrc.cjs',
+      '.eslintrc.json',
+      '.eslintrc.yml',
+      '.eslintrc.yaml',
+      'eslint.config.js',
+    }, { upward = true })[1]) or vim.loop.cwd(),
     settings = {
+      rulesCustomizations = customizations,
+
       codeAction = {
         disableRuleComment = { enable = true, location = 'separateLine' },
         showDocumentation = { enable = true },
@@ -62,7 +59,6 @@ M.setup = function()
       onIgnoredFiles = 'off',
       problems = { shortenToSingleLine = false },
       quiet = false,
-      rulesCustomizations = {},
       run = 'onType',
       useESLintClass = false,
       validate = 'on',
