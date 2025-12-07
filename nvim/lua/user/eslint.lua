@@ -13,28 +13,21 @@ local customizations = {
   { rule = '*semi', severity = 'off', fixable = true },
 }
 
+local base_on_attach = vim.lsp.config.eslint.on_attach
 M.setup = function()
   vim.lsp.start {
     name = 'eslint',
     cmd = { 'vscode-eslint-language-server', '--stdio' },
     on_attach = function(client, bufnr)
-      if client.supports_method('textDocument/formatting') then
-        vim.api.nvim_clear_autocmds { group = 'EslintFixAll', buffer = bufnr }
-        vim.api.nvim_create_autocmd('BufWritePre', {
-          group = 'EslintFixAll',
-          buffer = bufnr,
-          callback = function()
-            vim.lsp.buf.format {
-              bufnr = bufnr,
-              filter = function(c)
-                return c.name == 'eslint'
-              end,
-              timeout_ms = 5000,
-              async = false,
-            }
-          end,
-        })
+      if not base_on_attach then
+        return
       end
+
+      base_on_attach(client, bufnr)
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        buffer = bufnr,
+        command = 'LspEslintFixAll',
+      })
     end,
     root_dir = vim.fs.dirname(vim.fs.find({
       '.eslintrc',
@@ -47,13 +40,15 @@ M.setup = function()
     }, { upward = true })[1]) or vim.loop.cwd(),
     settings = {
       rulesCustomizations = customizations,
-
       codeAction = {
         disableRuleComment = { enable = true, location = 'separateLine' },
         showDocumentation = { enable = true },
       },
-      codeActionOnSave = { enable = true, mode = 'all' },
-      experimental = { useFlatConfig = false },
+      codeActionOnSave = {
+        enable = false,
+        mode = 'all',
+      },
+      experimental = { useFlatConfig = true },
       format = true,
       nodePath = '',
       onIgnoredFiles = 'off',
