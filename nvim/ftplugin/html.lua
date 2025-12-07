@@ -1,5 +1,6 @@
 local tailwindcss = require('user.tailwindcss')
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+local eslint = require('user.eslint')
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 vim.lsp.start {
@@ -22,3 +23,4 @@ vim.lsp.start {
 }
 
 tailwindcss.setup()
+eslint.setup()
