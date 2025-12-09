@@ -1,5 +1,6 @@
 local eslint = require('user.eslint')
 local tailwindcss = require('user.tailwindcss')
+local unocss = require('user.unocss')
 
 vim.lsp.start {
   name = 'ts_ls',
@@ -12,4 +13,5 @@ vim.lsp.start {
 }
 
 tailwindcss.setup()
+unocss.setup()
 eslint.setup()

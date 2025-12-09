@@ -1,5 +1,6 @@
 local eslint = require('user.eslint')
 local tailwindcss = require('user.tailwindcss')
+local unocss = require('user.unocss')
 
 local tsdk = vim.env.VUE_TSDK
 if not tsdk then
@@ -26,7 +27,7 @@ end
 if not tsdk then
   vim.notify(
     'VUE_TSDK environment variable not set and TypeScript not found in node_modules.\n'
-    .. 'Please set VUE_TSDK or install TypeScript locally.',
+      .. 'Please set VUE_TSDK or install TypeScript locally.',
     vim.log.levels.ERROR
   )
   return
@@ -35,7 +36,7 @@ end
 if not vue_plugin_location then
   vim.notify(
     'VUE_TYPESCRIPT_PLUGIN environment variable not set and @vue/language-server not found.\n'
-    .. 'Please set VUE_TYPESCRIPT_PLUGIN or install @vue/language-server locally.',
+      .. 'Please set VUE_TYPESCRIPT_PLUGIN or install @vue/language-server locally.',
     vim.log.levels.ERROR
   )
   return
@@ -92,8 +93,8 @@ vim.lsp.start {
   on_init = function(client)
     -- handle tsserver/request forwarding from vue_ls to ts_ls
     client.handlers['tsserver/request'] = function(_, result, context)
-      local ts_clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = 'ts_ls' })
-      
+      local ts_clients = vim.lsp.get_clients { bufnr = context.bufnr, name = 'ts_ls' }
+
       if #ts_clients == 0 then
         vim.notify(
           'Could not find `ts_ls` LSP client. `vue_ls` requires it for full functionality.',
@@ -101,11 +102,11 @@ vim.lsp.start {
         )
         return
       end
-      
+
       local ts_client = ts_clients[1]
       local param = unpack(result)
       local id, command, payload = unpack(param)
-      
+
       ts_client:exec_cmd({
         title = 'vue_request_forward',
         command = 'typescript.tsserverRequest',
@@ -116,7 +117,7 @@ vim.lsp.start {
       }, { bufnr = context.bufnr }, function(_, r)
         local response = r and r.body
         local response_data = { { id, response } }
-        
+
         ---@diagnostic disable-next-line: param-type-mismatch
         client:notify('tsserver/response', response_data)
       end)
@@ -125,4 +126,5 @@ vim.lsp.start {
 }
 
 tailwindcss.setup()
+unocss.setup()
 eslint.setup()

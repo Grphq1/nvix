@@ -1,4 +1,5 @@
 local tailwindcss = require('user.tailwindcss')
+local unocss = require('user.unocss')
 local eslint = require('user.eslint')
 
 --Enable (broadcasting) snippet capability for completion
@@ -30,4 +31,5 @@ vim.lsp.start {
 }
 
 tailwindcss.setup()
+unocss.setup()
 eslint.setup()
