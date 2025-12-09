@@ -149,6 +149,71 @@ with final.pkgs.lib; let
     fixed-vue-language-server # Using fixed version
     typescript
     tailwindcss-language-server
+    (pkgs.stdenv.mkDerivation rec {
+      pname = "unocss-language-server";
+      version = "0.1.8";
+
+      src = pkgs.fetchFromGitHub {
+        owner = "xna00";
+        repo = "unocss-language-server";
+        rev = "v${version}";
+        hash = "sha256-rRi9JvjljvjBbY6UsH2YzAQcp+Z+MqxK7hhDNkpEANw=";
+      };
+
+      pnpmDeps = pkgs.pnpm.fetchDeps {
+        inherit pname version src;
+        fetcherVersion = 1;
+        hash = "sha256-LYsalGuxSHWiEKg3saYhREkSwEr2UaWE71V0qo8Xjzc=";
+      };
+
+      nativeBuildInputs = with pkgs; [
+        nodejs
+        pnpm.configHook
+        makeBinaryWrapper
+      ];
+
+      buildPhase = ''
+        runHook preBuild
+        pnpm run build
+        runHook postBuild
+      '';
+
+      preInstall = ''
+        # the mv commands are workaround for https://github.com/pnpm/pnpm/issues/8307
+        mv node_modules node_modules.dontpruneme
+        CI=true pnpm prune --prod
+        mv node_modules.dontpruneme node_modules
+
+        find -type f \( -name "*.ts" -o -name "*.map" \) -exec rm -rf {} +
+
+        # https://github.com/pnpm/pnpm/issues/3645
+        find node_modules -xtype l -delete
+
+        # remove non-deterministic files
+        rm -f node_modules/.modules.yaml node_modules/.pnpm-workspace-state-v1.json
+      '';
+
+      installPhase = ''
+        runHook preInstall
+
+        mkdir -p $out/{bin,lib/unocss-language-server}
+        cp -r {node_modules,out,bin} $out/lib/unocss-language-server/
+
+        makeWrapper ${pkgs.lib.getExe pkgs.nodejs} $out/bin/unocss-language-server \
+          --inherit-argv0 \
+          --add-flags $out/lib/unocss-language-server/bin/index.js
+
+        runHook postInstall
+      '';
+
+      meta = with pkgs.lib; {
+        description = "A language server for UnoCSS";
+        homepage = "https://github.com/xna00/unocss-language-server";
+        license = licenses.mit;
+        maintainers = with maintainers; [ ];
+        mainProgram = "unocss-language-server";
+      };
+    })
     # formatter/linter
     vscode-langservers-extracted
     eslint
