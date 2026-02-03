@@ -6,6 +6,14 @@
 
 local M = {}
 
+---Finds the root directory for a project by looking for specific files
+---@param files table List of files to search for (e.g., {'package.json', 'tsconfig.json'})
+---@return string The root directory path, falls back to current working directory
+function M.find_root_dir(files)
+  local root_files = vim.fs.find(files, { upward = true })
+  return root_files[1] and vim.fs.dirname(root_files[1]) or vim.fn.getcwd()
+end
+
 ---Gets a 'ClientCapabilities' object, describing the LSP client capabilities
 ---Extends the object with capabilities provided by plugins.
 ---@return lsp.ClientCapabilities

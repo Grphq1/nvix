@@ -11,12 +11,12 @@ M.setup = function()
       end
       return { bin, '--stdio' }
     end)(),
-    root_dir = vim.fs.dirname(vim.fs.find({
+    root_dir = require('user.lsp').find_root_dir({
       'uno.config.js',
       'uno.config.ts',
       'unocss.config.js',
       'unocss.config.ts',
-    }, { upward = true })[1]),
+    }),
     settings = {
       unocss = {
         -- Optional settings can be added here based on what the language server supports

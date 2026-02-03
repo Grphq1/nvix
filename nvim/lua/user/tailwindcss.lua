@@ -4,12 +4,12 @@ M.setup = function()
   vim.lsp.start {
     name = 'tailwindcss',
     cmd = { 'tailwindcss-language-server', '--stdio' },
-    root_dir = vim.fs.dirname(
-      vim.fs.find(
-        { 'tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.mjs', 'tailwind.config.ts' },
-        { upward = true }
-      )[1]
-    ),
+    root_dir = require('user.lsp').find_root_dir({
+      'tailwind.config.js',
+      'tailwind.config.cjs',
+      'tailwind.config.mjs',
+      'tailwind.config.ts'
+    }),
     settings = {
       tailwindCSS = {
         classFunctions = { 'cva', 'clsx', 'cv' },

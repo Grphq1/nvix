@@ -29,7 +29,7 @@ M.setup = function()
         command = 'LspEslintFixAll',
       })
     end,
-    root_dir = vim.fs.dirname(vim.fs.find({
+    root_dir = require('user.lsp').find_root_dir({
       '.eslintrc',
       '.eslintrc.js',
       '.eslintrc.cjs',
@@ -37,7 +37,7 @@ M.setup = function()
       '.eslintrc.yml',
       '.eslintrc.yaml',
       'eslint.config.js',
-    }, { upward = true })[1]) or vim.loop.cwd(),
+    }),
     settings = {
       rulesCustomizations = customizations,
       codeAction = {
