@@ -50,8 +50,10 @@ opt.termguicolors = false
 opt.list = true
 opt.listchars = 'space:.,tab:>#,trail:~'
 
-opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-opt.colorcolumn = '100'
+-- use spaces for vertical split separators (no pipe character)
+opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:,vert: ,horiz: ]]
+-- remove vertical center guide
+opt.colorcolumn = ''
 
 -- enable bidi
 opt.termbidi = true
@@ -116,3 +118,8 @@ vim.g.sqlite_clib_path = require('luv').os_getenv('LIBSQLITE')
 opt.background = 'dark'
 vim.cmd('colorscheme base16-default-dark')
 -- Use default Vim look and terminal palette (no custom transparency)
+
+-- Remove underlines from default UI
+vim.api.nvim_set_hl(0, 'CursorLine', { underline = false })
+vim.api.nvim_set_hl(0, 'CursorColumn', { underline = false })
+vim.api.nvim_set_hl(0, 'StatusLineNC', { underline = false })
