@@ -7,8 +7,6 @@ vim.g.did_load_nvim_tree_plugin = true
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
-vim.opt.termguicolors = true
-
 vim.api.nvim_create_autocmd('VimEnter', {
   once = true,
   callback = function()
