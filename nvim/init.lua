@@ -48,7 +48,7 @@ opt.termguicolors = false
 
 -- make spaces and tabs visible
 opt.list = true
-opt.listchars = 'space:.,tab:>#,trail:~'
+opt.listchars = 'tab:>#,trail:~'
 
 -- use spaces for vertical split separators (no pipe character)
 opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:,vert: ,horiz: ]]
