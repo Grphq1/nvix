@@ -130,6 +130,7 @@ with final.pkgs.lib; let
     # colorscheme
     jellybeans-nvim
     github-nvim-theme
+    base16-vim
     # Formatters
     conform-nvim
     # ^ Formatters

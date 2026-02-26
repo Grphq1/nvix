@@ -43,7 +43,8 @@ opt.splitright = true
 opt.splitbelow = true
 opt.cmdheight = 0
 
-opt.termguicolors = true
+-- Use the terminal's color palette for Neovim
+opt.termguicolors = false
 
 -- make spaces and tabs visible
 opt.list = true
@@ -110,4 +111,8 @@ cmd.packadd('cfilter') -- Allows filtering the quickfix list with :cfdo
 -- let sqlite.lua (which some plugins depend on) know where to find sqlite
 vim.g.sqlite_clib_path = require('luv').os_getenv('LIBSQLITE')
 
-vim.cmd('colorscheme github_dark_colorblind')
+-- Use the terminal's default colors
+-- Use a terminal-friendly base16 colorscheme
+opt.background = 'dark'
+vim.cmd('colorscheme base16-default-dark')
+-- Use default Vim look and terminal palette (no custom transparency)
