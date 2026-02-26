@@ -3,6 +3,8 @@
 with final.pkgs.lib; let
   pkgs = final;
 
+  tabline-framework-nvim = pkgs.callPackage ./packages/tabline-framework-nvim.nix {};
+
   # Fix the broken vue-language-server package
   fixed-vue-language-server = pkgs.vue-language-server.overrideAttrs (oldAttrs: {
     preInstall = ''
@@ -101,6 +103,7 @@ with final.pkgs.lib; let
     nvim-treesitter-context # nvim-treesitter-context
     nvim-tree-lua
     # ^ UI
+    tabline-framework-nvim
     # language support
     # ^ language support
     # navigation/editing enhancement plugins
@@ -209,7 +212,7 @@ with final.pkgs.lib; let
         description = "A language server for UnoCSS";
         homepage = "https://github.com/xna00/unocss-language-server";
         license = licenses.mit;
-        maintainers = with maintainers; [ ];
+        maintainers = [ ];
         mainProgram = "unocss-language-server";
       };
     })
