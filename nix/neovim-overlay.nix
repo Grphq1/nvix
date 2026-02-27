@@ -119,7 +119,6 @@ with final.pkgs.lib; let
     # ^ navigation/editing enhancement plugins
     # Useful utilities
     nvim-unception # Prevent nested neovim sessions | nvim-unception
-    trouble-nvim
     # ^ Useful utilities
     # libraries that other plugins depend on
     sqlite-lua
