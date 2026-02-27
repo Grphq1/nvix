@@ -16,6 +16,7 @@ end
 
 ---Gets a 'ClientCapabilities' object, describing the LSP client capabilities
 ---Extends the object with capabilities provided by plugins.
+---@diagnostic disable-next-line: undefined-doc-name
 ---@return lsp.ClientCapabilities
 function M.make_client_capabilities()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
