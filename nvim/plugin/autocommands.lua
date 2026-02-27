@@ -95,10 +95,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
     keymap.set('n', '<space>cr', vim.lsp.codelens.refresh, desc('lsp [c]ode lenses [r]efresh'))
     keymap.set('n', 'gr', vim.lsp.buf.references, desc('lsp [g]et [r]eferences'))
     if client and client.server_capabilities.inlayHintProvider then
-      keymap.set('n', '<space>h', function()
+      keymap.set('n', '<space>uh', function()
         local current_setting = vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }
         vim.lsp.inlay_hint.enable(not current_setting, { bufnr = bufnr })
-      end, desc('[lsp] toggle inlay hints'))
+      end, desc('[lsp] toggle inlay hints [u][h]'))
     end
 
     -- Auto-refresh code lenses
