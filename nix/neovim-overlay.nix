@@ -142,6 +142,8 @@ with final.pkgs.lib; let
     # ai
     avante-nvim
     copilot-vim
+
+    focus-nvim # https://github.com/nvim-focus/focus.nvim
   ];
 
   extraPackages = with pkgs; [
