@@ -8,19 +8,6 @@ local actions = require('telescope.actions')
 
 local builtin = require('telescope.builtin')
 
-local layout_config = {
-  vertical = {
-    width = function(_, max_columns)
-      return math.floor(max_columns * 0.99)
-    end,
-    height = function(_, _, max_lines)
-      return math.floor(max_lines * 0.99)
-    end,
-    prompt_position = 'bottom',
-    preview_cutoff = 0,
-  },
-}
-
 -- Fall back to find_files if not in a git repo
 local project_files = function()
   local opts = {} -- define here if you want to define something
@@ -96,12 +83,27 @@ vim.keymap.set(
   builtin.current_buffer_fuzzy_find,
   { desc = '[t]elescope current [b]uffer [f]uzzy find' }
 )
-vim.keymap.set('n', '<leader>td', builtin.lsp_document_symbols, { desc = '[t]elescope lsp [d]ocument symbols' })
+-- vim.keymap.set('n', '<leader>td', builtin.lsp_document_symbols, { desc = '[t]elescope lsp [d]ocument symbols' })
 vim.keymap.set(
   'n',
   '<leader>to',
   builtin.lsp_dynamic_workspace_symbols,
   { desc = '[t]elescope lsp dynamic w[o]rkspace symbols' }
+)
+vim.keymap.set(
+  'n',
+  '<leader>td',
+  function()
+    builtin.diagnostics { bufnr = 0 }
+  end,
+  { desc = '[t]elescope lsp [d] documents diagnostics' }
+)
+
+vim.keymap.set(
+  'n',
+  '<leader>tw',
+  builtin.diagnostics,
+  { desc = '[t]elescope lsp [w] workspace diagnostics' }
 )
 
 telescope.setup {
@@ -109,8 +111,7 @@ telescope.setup {
     path_display = {
       'truncate',
     },
-    layout_strategy = 'vertical',
-    layout_config = layout_config,
+    layout_strategy = 'horizontal',
     mappings = {
       i = {
         ['<C-q>'] = actions.send_to_qflist,
