@@ -4,6 +4,7 @@ with final.pkgs.lib; let
   pkgs = final;
 
   tabline-framework-nvim = pkgs.callPackage ./packages/tabline-framework-nvim.nix {};
+  floatty = pkgs.callPackage ./packages/floatty.nix {};
 
   # Fix the broken vue-language-server package
   fixed-vue-language-server = pkgs.vue-language-server.overrideAttrs (oldAttrs: {
@@ -144,6 +145,9 @@ with final.pkgs.lib; let
     copilot-vim
 
     focus-nvim # https://github.com/nvim-focus/focus.nvim
+
+    # terminal
+    floatty
 
     friendly-snippets
   ];
