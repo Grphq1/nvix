@@ -144,6 +144,8 @@ with final.pkgs.lib; let
     copilot-vim
 
     focus-nvim # https://github.com/nvim-focus/focus.nvim
+
+    friendly-snippets
   ];
 
   extraPackages = with pkgs; [
