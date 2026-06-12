@@ -58,13 +58,7 @@ vim.lsp.start {
       vue_plugin,
     },
   },
-  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
-  on_attach = function(client, bufnr)
-    -- Disable semantic tokens for Vue files in ts_ls (handled by vue_ls)
-    if vim.bo[bufnr].filetype == 'vue' then
-      client.server_capabilities.semanticTokensProvider = nil
-    end
-  end,
+  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact' },
 }
 
 vim.lsp.start {
