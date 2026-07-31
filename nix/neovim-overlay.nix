@@ -140,7 +140,6 @@ with final.pkgs.lib; let
     vim-wakatime
 
     # ai
-    avante-nvim
     copilot-vim
 
     focus-nvim # https://github.com/nvim-focus/focus.nvim
