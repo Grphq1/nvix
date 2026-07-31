@@ -224,7 +224,7 @@ with final.pkgs.lib; let
     # formatter/linter
     vscode-langservers-extracted
     eslint
-    nodePackages.prettier
+    prettier
     stylua
     alejandra
   ];
