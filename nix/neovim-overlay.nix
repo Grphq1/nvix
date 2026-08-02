@@ -150,7 +150,7 @@ with final.pkgs.lib; let
     ripgrep
     # language servers
     lua-language-server
-    nil
+    nixd
     typescript-language-server
     fixed-vue-language-server # Using fixed version
     typescript
