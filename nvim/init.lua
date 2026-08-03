@@ -46,10 +46,6 @@ opt.cmdheight = 0
 -- Use the terminal's color palette for Neovim
 opt.termguicolors = false
 
--- make spaces and tabs visible
-opt.list = true
-opt.listchars = 'tab:>#,trail:~'
-
 -- use spaces for vertical split separators (no pipe character)
 opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:,vert: ,horiz: ]]
 -- remove vertical center guide
