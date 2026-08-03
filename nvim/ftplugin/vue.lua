@@ -2,25 +2,29 @@ local eslint = require('user.eslint')
 local tailwindcss = require('user.tailwindcss')
 local unocss = require('user.unocss')
 
-local tsdk = vim.env.VUE_TSDK
-if not tsdk then
-  local root = vim.fs.root(0, { 'package.json', 'tsconfig.json', '.git' })
-  if root then
-    local local_ts = root .. '/node_modules/typescript/lib'
-    if vim.fn.isdirectory(local_ts) == 1 then
-      tsdk = local_ts
-    end
-  end
+local root_markers = {
+  'package.json',
+  'tsconfig.json',
+  'jsconfig.json',
+  'vue.config.js',
+  'nuxt.config.js',
+  '.git',
+}
+
+local root = vim.fs.root(0, root_markers)
+
+if not root then
+  vim.notify('Could not find project root.', vim.log.levels.ERROR)
+  return
 end
 
-local vue_plugin_location = vim.env.VUE_TYPESCRIPT_PLUGIN
-if not vue_plugin_location then
-  local root = vim.fs.root(0, { 'package.json', 'tsconfig.json', '.git' })
-  if root then
-    local local_vue = root .. '/node_modules/@vue/language-server'
-    if vim.fn.isdirectory(local_vue) == 1 then
-      vue_plugin_location = local_vue
-    end
+local tsdk = vim.env.VUE_TSDK
+
+if not tsdk then
+  local local_ts = root .. '/node_modules/typescript/lib'
+
+  if vim.fn.isdirectory(local_ts) == 1 then
+    tsdk = local_ts
   end
 end
 
@@ -33,7 +37,17 @@ if not tsdk then
   return
 end
 
-if not vue_plugin_location then
+local vue_language_server_path = vim.env.VUE_TYPESCRIPT_PLUGIN
+
+if not vue_language_server_path then
+  local local_vue = root .. '/node_modules/@vue/language-server'
+
+  if vim.fn.isdirectory(local_vue) == 1 then
+    vue_language_server_path = local_vue
+  end
+end
+
+if not vue_language_server_path then
   vim.notify(
     'VUE_TYPESCRIPT_PLUGIN environment variable not set and @vue/language-server not found.\n'
       .. 'Please set VUE_TYPESCRIPT_PLUGIN or install @vue/language-server locally.',
@@ -42,62 +56,81 @@ if not vue_plugin_location then
   return
 end
 
+local tsserver_filetypes = {
+  'typescript',
+  'javascript',
+  'javascriptreact',
+  'typescriptreact',
+  'vue',
+}
+
 local vue_plugin = {
   name = '@vue/typescript-plugin',
-  location = vue_plugin_location,
+  location = vue_language_server_path,
   languages = { 'vue' },
   configNamespace = 'typescript',
 }
 
 vim.lsp.start {
   name = 'ts_ls',
-  cmd = { 'typescript-language-server', '--stdio' },
-  root_dir = vim.fs.root(0, { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' }),
+
+  cmd = {
+    'typescript-language-server',
+    '--stdio',
+  },
+
+  root_dir = vim.fs.root(0, root_markers),
+
+  filetypes = tsserver_filetypes,
+
   init_options = {
     plugins = {
       vue_plugin,
     },
   },
-  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact' },
 }
 
 vim.lsp.start {
   name = 'vue_ls',
-  cmd = { 'vue-language-server', '--stdio' },
-  root_dir = vim.fs.root(0, { 'package.json', 'vue.config.js', 'nuxt.config.js', '.git' }),
+
+  cmd = {
+    'vue-language-server',
+    '--stdio',
+  },
+
+  root_dir = vim.fs.root(0, root_markers),
+
+  filetypes = {
+    'vue',
+  },
+
   init_options = {
     vue = {
-      hybridMode = false, -- Set to false for Vue 3 (true for Vue 2)
+      hybridMode = false,
     },
+
     typescript = {
       tsdk = tsdk,
     },
   },
-  on_new_config = function(new_config, new_root_dir)
-    -- automatically detect Vue version and set hybridMode accordingly
-    local package_json = new_root_dir .. '/package.json'
-    if vim.fn.filereadable(package_json) == 1 then
-      local content = vim.fn.readfile(package_json)
-      local json_str = table.concat(content, '\n')
-      if json_str:match('"vue"%s*:%s*"[~^]?2%.') then
-        new_config.init_options.vue.hybridMode = true
-      end
-    end
-  end,
+
   on_init = function(client)
-    -- handle tsserver/request forwarding from vue_ls to ts_ls
     client.handlers['tsserver/request'] = function(_, result, context)
-      local ts_clients = vim.lsp.get_clients { bufnr = context.bufnr, name = 'ts_ls' }
+      local ts_clients = vim.lsp.get_clients {
+        bufnr = context.bufnr,
+        name = 'ts_ls',
+      }
 
       if #ts_clients == 0 then
         vim.notify(
           'Could not find `ts_ls` LSP client. `vue_ls` requires it for full functionality.',
-          vim.log.levels.WARN
+          vim.log.levels.ERROR
         )
         return
       end
 
       local ts_client = ts_clients[1]
+
       local param = unpack(result)
       local id, command, payload = unpack(param)
 
@@ -108,9 +141,14 @@ vim.lsp.start {
           command,
           payload,
         },
-      }, { bufnr = context.bufnr }, function(_, r)
+      }, {
+        bufnr = context.bufnr,
+      }, function(_, r)
         local response = r and r.body
-        local response_data = { { id, response } }
+
+        local response_data = {
+          { id, response },
+        }
 
         ---@diagnostic disable-next-line: param-type-mismatch
         client:notify('tsserver/response', response_data)
