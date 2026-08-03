@@ -1,3 +1,5 @@
+local sync = require('user.file_manager_sync')
+
 vim.loader.enable()
 
 local cmd = vim.cmd
@@ -116,3 +118,41 @@ vim.cmd('colorscheme default')
 vim.api.nvim_set_hl(0, 'CursorLine', { underline = false })
 vim.api.nvim_set_hl(0, 'CursorColumn', { underline = false })
 vim.api.nvim_set_hl(0, 'StatusLineNC', { underline = false })
+
+
+sync.setup({
+  name = 'lf',
+  augroup = 'LfSync',
+
+  sync = function(id, file)
+    local dir = vim.fn.shellescape(vim.fs.dirname(file))
+    local path = vim.fn.shellescape(file)
+
+    vim.fn.jobstart({
+      'lf',
+      '-remote',
+      ('send %s cd %s'):format(id, dir),
+    }, { detach = true })
+
+    vim.fn.jobstart({
+      'lf',
+      '-remote',
+      ('send %s select %s'):format(id, path),
+    }, { detach = true })
+  end,
+})
+
+sync.setup({
+  name = 'yazi',
+  augroup = 'YaziSync',
+
+  sync = function(id, file)
+    vim.fn.jobstart({
+      'ya',
+      'emit-to',
+      id,
+      'reveal',
+      file,
+    }, { detach = true })
+  end,
+})
