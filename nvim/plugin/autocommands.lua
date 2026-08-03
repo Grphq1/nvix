@@ -64,7 +64,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- Attach plugins
     if client and client.server_capabilities.documentSymbolProvider then
-      require('nvim-navic').attach(client, bufnr)
+      local should_attach = true
+
+      if vim.bo[bufnr].filetype == 'vue' then
+        should_attach = client.name == 'vue_ls'
+      end
+
+      if should_attach then
+        require('nvim-navic').attach(client, bufnr)
+      end
     end
     vim.cmd.setlocal('signcolumn=yes')
     vim.bo[bufnr].bufhidden = 'hide'
