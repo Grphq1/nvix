@@ -159,6 +159,9 @@ with final.pkgs.lib; let
     prettier
     stylua
     alejandra
+    oxlint
+    oxfmt
+    tsgolint
   ];
 in {
   # This is the neovim derivation
