@@ -138,9 +138,6 @@ with final.pkgs.lib; let
     # ^ Formatters
     vim-wakatime
 
-    # ai
-    copilot-vim
-
     focus-nvim # https://github.com/nvim-focus/focus.nvim
 
     friendly-snippets
