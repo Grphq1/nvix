@@ -1,23 +1,34 @@
 local M = {}
 
-M.setup = function()
+local lsp = require('user.lsp')
+
+local root_markers = {
+  'uno.config.js',
+  'uno.config.ts',
+  'unocss.config.js',
+  'unocss.config.ts',
+}
+
+function M.setup()
+  local root_dir = lsp.find_root_dir(root_markers, nil, true)
+
+  if not root_dir then
+    return
+  end
+
+  local cmd = vim.fn.exepath('unocss-language-server')
+
+  if cmd == '' then
+    return
+  end
+
   vim.lsp.start {
     name = 'unocss',
-    -- prefer system binary, fall back to the built Nix store path
-    cmd = (function()
-      local bin = vim.fn.exepath('unocss-language-server')
-      return { bin, '--stdio' }
-    end)(),
-    root_dir = require('user.lsp').find_root_dir({
-      'uno.config.js',
-      'uno.config.ts',
-      'unocss.config.js',
-      'unocss.config.ts',
-    }),
+    cmd = { cmd, '--stdio' },
+    root_dir = root_dir,
+
     settings = {
-      unocss = {
-        -- Optional settings can be added here based on what the language server supports
-      },
+      unocss = {},
     },
   }
 end
