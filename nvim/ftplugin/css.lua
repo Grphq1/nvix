@@ -2,6 +2,8 @@ local tailwindcss = require('user.tailwindcss')
 local unocss = require('user.unocss')
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local eslint = require('user.eslint')
+local oxlint = require('user.oxlint')
+local oxfmt = require('user.oxfmt')
 
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
@@ -40,3 +42,5 @@ vim.lsp.start {
 tailwindcss.setup()
 unocss.setup()
 eslint.setup()
+oxlint:setup()
+oxfmt:setup()

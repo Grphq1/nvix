@@ -1,6 +1,8 @@
 local tailwindcss = require('user.tailwindcss')
 local unocss = require('user.unocss')
 local eslint = require('user.eslint')
+local oxlint = require('user.oxlint')
+local oxfmt = require('user.oxfmt')
 
 --Enable (broadcasting) snippet capability for completion
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -33,3 +35,5 @@ vim.lsp.start {
 tailwindcss.setup()
 unocss.setup()
 eslint.setup()
+oxlint:setup()
+oxfmt:setup()

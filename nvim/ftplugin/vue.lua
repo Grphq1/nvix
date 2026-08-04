@@ -1,6 +1,8 @@
 local eslint = require('user.eslint')
 local tailwindcss = require('user.tailwindcss')
 local unocss = require('user.unocss')
+local oxlint = require('user.oxlint')
+local oxfmt = require('user.oxfmt')
 
 local root_markers = {
   'package.json',
@@ -160,3 +162,5 @@ vim.lsp.start {
 tailwindcss.setup()
 unocss.setup()
 eslint.setup()
+oxlint:setup()
+oxfmt:setup()

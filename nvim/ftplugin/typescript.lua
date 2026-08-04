@@ -2,6 +2,8 @@ local eslint = require('user.eslint')
 local tailwindcss = require('user.tailwindcss')
 local unocss = require('user.unocss')
 local lsp_utils = require('user.lsp')
+local oxlint = require('user.oxlint')
+local oxfmt = require('user.oxfmt')
 
 vim.lsp.start {
   name = 'ts_ls',
@@ -17,3 +19,5 @@ vim.lsp.start {
 tailwindcss.setup()
 unocss.setup()
 eslint.setup()
+oxlint:setup()
+oxfmt:setup()
