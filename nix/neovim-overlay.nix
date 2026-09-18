@@ -140,6 +140,9 @@ with final.pkgs.lib; let
 
     focus-nvim # https://github.com/nvim-focus/focus.nvim
 
+    # ai
+    copilot-vim
+
     friendly-snippets
   ];
 
