@@ -5,32 +5,135 @@ vim.g.did_load_keymaps_plugin = true
 
 local api = vim.api
 local fn = vim.fn
-local keymap = vim.keymap
 local diagnostic = vim.diagnostic
+local keymap = vim.keymap
+local severity = diagnostic.severity
 
--- Toggle the quickfix list (only opens if it is populated)
-local function toggle_diagnostics()
-  local loclist_win = vim.fn.getloclist(0, { winid = 0 }).winid
-  if loclist_win ~= 0 then
-    vim.cmd.lclose()
-    return
-  end
+local QF_HEIGHT = 3
 
-  vim.diagnostic.setloclist({
-    open = true,
+local function fmt_diag(d)
+  return (d.source and ('[' .. d.source .. '] ') or '') .. (d.message or '')
+end
+
+local function qf_win()
+  local w = fn.getqflist({ winid = 0 }).winid
+  return (w ~= 0 and api.nvim_win_is_valid(w)) and w or nil
+end
+
+local function refresh_qf()
+  diagnostic.setqflist({
+    open = false,
     title = 'Diagnostics',
-    format = function(d)
-      local source = d.source and ('[' .. d.source .. '] ') or ''
-      local code = d.code and ('(' .. d.code .. ') ') or ''
-      return source .. code .. d.message
-    end,
+    format = fmt_diag,
   })
 end
 
-vim.keymap.set('n', '<C-c>', toggle_diagnostics, { desc = 'Toggle diagnostics (loclist)' })
+local function fit_qf_height()
+  local winid = qf_win()
+  if not winid then return end
+  vim.wo[winid].winfixheight = true
+  vim.wo[winid].winfixwidth  = true
+  if api.nvim_win_get_height(winid) ~= QF_HEIGHT then
+    api.nvim_win_set_height(winid, QF_HEIGHT)
+  end
+end
+
+local function toggle_qf()
+  if qf_win() then
+    vim.cmd.cclose()
+    return
+  end
+  refresh_qf()
+  local cur_win = api.nvim_get_current_win()
+  vim.cmd('keepalt botright copen ' .. QF_HEIGHT)
+  if api.nvim_win_is_valid(cur_win) then
+    api.nvim_set_current_win(cur_win)
+  end
+  vim.schedule(fit_qf_height)
+end
+
+keymap.set('n', '<leader>qft', toggle_qf, { desc = 'Toggle diagnostics' })
+
+keymap.set('n', '<leader>qff', function()
+  local w = qf_win()
+  if not w then
+    vim.notify('diagnostics window is not open', vim.log.levels.INFO)
+    return
+  end
+  if api.nvim_get_current_win() == w then
+    vim.cmd.wincmd 'p'
+  else
+    api.nvim_set_current_win(w)
+  end
+end, { desc = 'Focus diagnostics' })
 
 
--- Shortcut for expanding to current buffer's directory in command mode
+api.nvim_create_autocmd('DiagnosticChanged', {
+  callback = function()
+    vim.schedule(function()
+      if qf_win() then
+        refresh_qf()
+        fit_qf_height()
+      end
+    end)
+  end,
+})
+
+api.nvim_create_autocmd('FileType', {
+  pattern = 'qf',
+  callback = function()
+    vim.schedule(fit_qf_height)
+  end,
+})
+
+api.nvim_create_autocmd('WinResized', {
+  callback = function()
+    if qf_win() then
+      vim.schedule(fit_qf_height)
+    end
+  end,
+})
+
+
+keymap.set('n', '[d', diagnostic.goto_prev, { desc = 'previous [d]iagnostic' })
+keymap.set('n', ']d', diagnostic.goto_next, { desc = 'next [d]iagnostic' })
+
+keymap.set('n', '[e', function()
+  diagnostic.goto_prev { severity = severity.ERROR }
+end, { desc = 'previous [e]rror diagnostic' })
+keymap.set('n', ']e', function()
+  diagnostic.goto_next { severity = severity.ERROR }
+end, { desc = 'next [e]rror diagnostic' })
+
+keymap.set('n', '[w', function()
+  diagnostic.goto_prev { severity = severity.WARN }
+end, { desc = 'previous [w]arning diagnostic' })
+keymap.set('n', ']w', function()
+  diagnostic.goto_next { severity = severity.WARN }
+end, { desc = 'next [w]arning diagnostic' })
+
+keymap.set('n', '[h', function()
+  diagnostic.goto_prev { severity = severity.HINT }
+end, { desc = 'previous [h]int diagnostic' })
+keymap.set('n', ']h', function()
+  diagnostic.goto_next { severity = severity.HINT }
+end, { desc = 'next [h]int diagnostic' })
+
+keymap.set('n', '<space>e', function()
+  local _, winid = diagnostic.open_float(nil, { scope = 'line' })
+  if not winid then
+    vim.notify('no diagnostics found', vim.log.levels.INFO)
+    return
+  end
+  api.nvim_win_set_config(winid, { focusable = true })
+end, { desc = 'diagnostics floating window' })
+
+keymap.set('n', '<space>dt', function()
+  local filter = { bufnr = api.nvim_get_current_buf() }
+  diagnostic.enable(not diagnostic.is_enabled(filter), filter)
+end, { desc = 'toggle diagnostics (buffer)' })
+
+
 keymap.set('c', '%%', function()
   if fn.getcmdtype() == ':' then
     return fn.expand('%:h') .. '/'
@@ -39,66 +142,15 @@ keymap.set('c', '%%', function()
   end
 end, { expr = true, desc = "expand to current buffer's directory" })
 
-local severity = diagnostic.severity
-
-keymap.set('n', '<space>e', function()
-  local _, winid = diagnostic.open_float(nil, { scope = 'line' })
-  if not winid then
-    vim.notify('no diagnostics found', vim.log.levels.INFO)
-    return
-  end
-  vim.api.nvim_win_set_config(winid or 0, { focusable = true })
-end, { noremap = true, silent = true, desc = 'diagnostics floating window' })
-keymap.set('n', '[d', diagnostic.goto_prev, { noremap = true, silent = true, desc = 'previous [d]iagnostic' })
-keymap.set('n', ']d', diagnostic.goto_next, { noremap = true, silent = true, desc = 'next [d]iagnostic' })
-keymap.set('n', '[e', function()
-  diagnostic.goto_prev {
-    severity = severity.ERROR,
-  }
-end, { noremap = true, silent = true, desc = 'previous [e]rror diagnostic' })
-keymap.set('n', ']e', function()
-  diagnostic.goto_next {
-    severity = severity.ERROR,
-  }
-end, { noremap = true, silent = true, desc = 'next [e]rror diagnostic' })
-keymap.set('n', '[w', function()
-  diagnostic.goto_prev {
-    severity = severity.WARN,
-  }
-end, { noremap = true, silent = true, desc = 'previous [w]arning diagnostic' })
-keymap.set('n', ']w', function()
-  diagnostic.goto_next {
-    severity = severity.WARN,
-  }
-end, { noremap = true, silent = true, desc = 'next [w]arning diagnostic' })
-keymap.set('n', '[h', function()
-  diagnostic.goto_prev {
-    severity = severity.HINT,
-  }
-end, { noremap = true, silent = true, desc = 'previous [h]int diagnostic' })
-keymap.set('n', ']h', function()
-  diagnostic.goto_next {
-    severity = severity.HINT,
-  }
-end, { noremap = true, silent = true, desc = 'next [h]int diagnostic' })
-
-local function buf_toggle_diagnostics()
-  local filter = { bufnr = api.nvim_get_current_buf() }
-  diagnostic.enable(not diagnostic.is_enabled(filter), filter)
-end
-
-keymap.set('n', '<space>dt', buf_toggle_diagnostics)
-
-local function toggle_spell_check()
+keymap.set('n', '<leader>S', function()
   ---@diagnostic disable-next-line: param-type-mismatch
   vim.opt.spell = not (vim.opt.spell:get())
-end
+end, { desc = 'toggle [S]pell' })
 
-keymap.set('n', '<leader>S', toggle_spell_check, { noremap = true, silent = true, desc = 'toggle [S]pell' })
 
 keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'move [d]own half-page and center' })
 keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'move [u]p half-page and center' })
 keymap.set('n', '<C-f>', '<C-f>zz', { desc = 'move DOWN [f]ull-page and center' })
 keymap.set('n', '<C-b>', '<C-b>zz', { desc = 'move UP full-page and center' })
 
-keymap.set('n', '<leader>pv', vim.cmd.Ex)
+keymap.set('n', '<leader>pv', vim.cmd.Ex, { desc = 'open netrw' })
