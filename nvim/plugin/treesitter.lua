@@ -56,9 +56,5 @@ vim.keymap.set({ 'n', 'x', 'o' }, '[P', function()
   require('nvim-treesitter-textobjects.move').goto_previous_end('@parameter.outer', 'textobjects')
 end, { desc = 'previous [P]arameter (end)' })
 
-require('treesitter-context').setup {
-  max_lines = 3,
-}
-
 require('ts_context_commentstring').setup()
 
