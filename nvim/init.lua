@@ -43,8 +43,6 @@ opt.splitright = true
 opt.splitbelow = true
 opt.cmdheight = 0
 
--- Use the terminal's color palette for Neovim
-opt.termguicolors = false
 
 opt.fillchars = 'eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:'
 -- -- remove vertical center guide
@@ -107,14 +105,6 @@ cmd.packadd('cfilter') -- Allows filtering the quickfix list with :cfdo
 
 -- let sqlite.lua (which some plugins depend on) know where to find sqlite
 vim.g.sqlite_clib_path = require('luv').os_getenv('LIBSQLITE')
-
--- Use default Vim look and terminal palette (no custom transparency)
-
--- Remove underlines from default UI
--- vim.api.nvim_set_hl(0, 'CursorLine', { underline = false })
--- vim.api.nvim_set_hl(0, 'CursorColumn', { underline = false })
--- vim.api.nvim_set_hl(0, 'StatusLineNC', { underline = false })
-
 
 sync.setup({
   name = 'lf',
