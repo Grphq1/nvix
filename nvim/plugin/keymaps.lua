@@ -19,10 +19,10 @@ local function toggle_diagnostics()
   vim.diagnostic.setloclist({
     open = true,
     title = 'Diagnostics',
-    format = function()
-      local source = diagnostic.source and ('[' .. diagnostic.source .. '] ') or ''
-      local code = diagnostic.code and ('(' .. diagnostic.code .. ') ') or ''
-      return source .. code .. diagnostic.message
+    format = function(d)
+      local source = d.source and ('[' .. d.source .. '] ') or ''
+      local code = d.code and ('(' .. d.code .. ') ') or ''
+      return source .. code .. d.message
     end,
   })
 end
