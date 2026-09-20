@@ -108,7 +108,6 @@ cmd.packadd('cfilter') -- Allows filtering the quickfix list with :cfdo
 -- let sqlite.lua (which some plugins depend on) know where to find sqlite
 vim.g.sqlite_clib_path = require('luv').os_getenv('LIBSQLITE')
 
-vim.cmd('colorscheme catppuccin')
 -- Use default Vim look and terminal palette (no custom transparency)
 
 -- Remove underlines from default UI

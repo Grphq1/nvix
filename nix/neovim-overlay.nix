@@ -129,9 +129,7 @@ with final.pkgs.lib; let
     # ^ bleeding-edge plugins from flake inputs
     which-key-nvim
     # colorscheme
-    jellybeans-nvim
-    github-nvim-theme
-    base16-vim
+    catppuccin-nvim
     # Formatters
     conform-nvim
     # ^ Formatters
