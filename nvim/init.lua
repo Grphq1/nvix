@@ -32,11 +32,9 @@ opt.softtabstop = 2
 opt.shiftwidth = 2
 opt.clipboard = 'unnamedplus'
 
-opt.foldenable = true
-opt.foldmethod = 'expr'
-opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-vim.opt.foldlevel = 99
--- vim.opt.foldlevelstart = 99
+opt.foldlevel = 99
+opt.foldcolumn = '1'
+opt.foldlevelstart = 99
 
 opt.history = 2000
 opt.nrformats = 'bin,hex' -- 'octal'
@@ -48,10 +46,9 @@ opt.cmdheight = 0
 -- Use the terminal's color palette for Neovim
 opt.termguicolors = false
 
--- use spaces for vertical split separators (no pipe character)
-opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:,vert: ,horiz: ]]
--- remove vertical center guide
-opt.colorcolumn = ''
+opt.fillchars = 'eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:'
+-- -- remove vertical center guide
+-- opt.colorcolumn = ''
 
 -- enable bidi
 opt.termbidi = true
@@ -111,13 +108,13 @@ cmd.packadd('cfilter') -- Allows filtering the quickfix list with :cfdo
 -- let sqlite.lua (which some plugins depend on) know where to find sqlite
 vim.g.sqlite_clib_path = require('luv').os_getenv('LIBSQLITE')
 
-vim.cmd('colorscheme default')
+vim.cmd('colorscheme catppuccin')
 -- Use default Vim look and terminal palette (no custom transparency)
 
 -- Remove underlines from default UI
-vim.api.nvim_set_hl(0, 'CursorLine', { underline = false })
-vim.api.nvim_set_hl(0, 'CursorColumn', { underline = false })
-vim.api.nvim_set_hl(0, 'StatusLineNC', { underline = false })
+-- vim.api.nvim_set_hl(0, 'CursorLine', { underline = false })
+-- vim.api.nvim_set_hl(0, 'CursorColumn', { underline = false })
+-- vim.api.nvim_set_hl(0, 'StatusLineNC', { underline = false })
 
 
 sync.setup({
@@ -156,3 +153,4 @@ sync.setup({
     }, { detach = true })
   end,
 })
+

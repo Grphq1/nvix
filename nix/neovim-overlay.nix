@@ -144,6 +144,7 @@ with final.pkgs.lib; let
     copilot-vim
 
     friendly-snippets
+    nvim-ufo
   ];
 
   extraPackages = with pkgs; [
