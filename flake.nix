@@ -1,6 +1,15 @@
 {
   description = "Neovim derivation";
 
+  nixConfig = {
+    extra-substituters = [
+      "https://unocss-language-server-nix.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "unocss-language-server-nix.cachix.org-1:FHwwYQY2s9CgEHRqCgv2MiT0XAySjpyZLJTHg5hHFP0="
+    ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
