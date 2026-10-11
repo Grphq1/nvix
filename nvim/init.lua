@@ -51,6 +51,8 @@ opt.fillchars = 'eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:'
 -- enable bidi
 opt.termbidi = true
 
+vim.g.copilot_proxy = 'http://localhost:2080'
+
 -- Configure Neovim diagnostic messages
 
 local function prefix_diagnostic(prefix, diagnostic)
