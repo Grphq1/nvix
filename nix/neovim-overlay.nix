@@ -5,6 +5,8 @@ with final.pkgs.lib; let
 
   tabline-framework-nvim = pkgs.callPackage ./packages/tabline-framework-nvim.nix {};
 
+  inlinediff-nvim = pkgs.callPackage ./packages/inlinediff-nvim.nix {};
+
   # Fix the broken vue-language-server package
   fixed-vue-language-server = pkgs.vue-language-server.overrideAttrs (oldAttrs: {
     preInstall = ''
@@ -105,6 +107,7 @@ with final.pkgs.lib; let
     statuscol-nvim # Status column | https://github.com/luukvbaal/statuscol.nvim/
     # ^ UI
     tabline-framework-nvim
+    inlinediff-nvim
     # language support
     # ^ language support
     # navigation/editing enhancement plugins
