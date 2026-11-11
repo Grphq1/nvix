@@ -7,6 +7,8 @@ with final.pkgs.lib; let
 
   inlinediff-nvim = pkgs.callPackage ./packages/inlinediff-nvim.nix {};
 
+  lsp-lens = pkgs.callPackage ./packages/lsp-lens.nix {};
+
   # Fix the broken vue-language-server package
   fixed-vue-language-server = pkgs.vue-language-server.overrideAttrs (oldAttrs: {
     preInstall = ''
@@ -99,6 +101,7 @@ with final.pkgs.lib; let
     # ^ git integration plugins
     # telescope and extensions
     telescope-nvim # https://github.com/nvim-telescope/telescope.nvim/
+    grapple-nvim
     telescope-fzy-native-nvim # https://github.com/nvim-telescope/telescope-fzy-native.nvim
     # telescope-smart-history-nvim # https://github.com/nvim-telescope/telescope-smart-history.nvim
     # ^ telescope and extensions
@@ -108,6 +111,7 @@ with final.pkgs.lib; let
     # ^ UI
     tabline-framework-nvim
     inlinediff-nvim
+    lsp-lens
     # language support
     # ^ language support
     # navigation/editing enhancement plugins
