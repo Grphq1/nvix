@@ -20,25 +20,6 @@ if not root then
   return
 end
 
-local tsdk = vim.env.VUE_TSDK
-
-if not tsdk then
-  local local_ts = root .. '/node_modules/typescript/lib'
-
-  if vim.fn.isdirectory(local_ts) == 1 then
-    tsdk = local_ts
-  end
-end
-
-if not tsdk then
-  vim.notify(
-    'VUE_TSDK environment variable not set and TypeScript not found in node_modules.\n'
-      .. 'Please set VUE_TSDK or install TypeScript locally.',
-    vim.log.levels.ERROR
-  )
-  return
-end
-
 local vue_language_server_path = vim.env.VUE_TYPESCRIPT_PLUGIN
 
 if not vue_language_server_path then
@@ -58,14 +39,6 @@ if not vue_language_server_path then
   return
 end
 
-local tsserver_filetypes = {
-  'typescript',
-  'javascript',
-  'javascriptreact',
-  'typescriptreact',
-  'vue',
-}
-
 local vue_plugin = {
   name = '@vue/typescript-plugin',
   location = vue_language_server_path,
@@ -74,20 +47,34 @@ local vue_plugin = {
 }
 
 vim.lsp.start {
-  name = 'ts_ls',
+  name = 'vtsls',
 
   cmd = {
-    'typescript-language-server',
+    'vtsls',
     '--stdio',
   },
 
-  root_dir = vim.fs.root(0, root_markers),
+  root_dir = root,
 
-  filetypes = tsserver_filetypes,
+  filetypes = {
+    'typescript',
+    'javascript',
+    'javascriptreact',
+    'typescriptreact',
+    'vue',
+  },
 
   init_options = {
-    plugins = {
-      vue_plugin,
+    hostInfo = 'neovim',
+  },
+
+  settings = {
+    vtsls = {
+      tsserver = {
+        globalPlugins = {
+          vue_plugin,
+        },
+      },
     },
   },
 }
@@ -100,38 +87,33 @@ vim.lsp.start {
     '--stdio',
   },
 
-  root_dir = vim.fs.root(0, root_markers),
+  root_dir = root,
 
   filetypes = {
     'vue',
   },
 
-  init_options = {
-    vue = {
-      hybridMode = false,
-    },
-
-    typescript = {
-      tsdk = tsdk,
-    },
-  },
-
   on_init = function(client)
-    client.handlers['tsserver/request'] = function(_, result, context)
-      local ts_clients = vim.lsp.get_clients {
-        bufnr = context.bufnr,
-        name = 'ts_ls',
-      }
+    local retries = 0
 
-      if #ts_clients == 0 then
-        vim.notify(
-          'Could not find `ts_ls` LSP client. `vue_ls` requires it for full functionality.',
-          vim.log.levels.ERROR
-        )
+    ---@param _ lsp.ResponseError
+    ---@param result any
+    ---@param context lsp.HandlerContext
+    local function typescript_handler(_, result, context)
+      local ts_client = vim.lsp.get_clients({ bufnr = context.bufnr, name = 'vtsls' })[1]
+
+      if not ts_client then
+        -- vtsls may still be starting, so retry briefly
+        if retries <= 10 then
+          retries = retries + 1
+          vim.defer_fn(function()
+            typescript_handler(_, result, context)
+          end, 100)
+        else
+          vim.notify('Could not find `vtsls` LSP client required by `vue_ls`.', vim.log.levels.ERROR)
+        end
         return
       end
-
-      local ts_client = ts_clients[1]
 
       local param = unpack(result)
       local id, command, payload = unpack(param)
@@ -146,16 +128,16 @@ vim.lsp.start {
       }, {
         bufnr = context.bufnr,
       }, function(_, r)
-        local response = r and r.body
-
         local response_data = {
-          { id, response },
+          { id, r and r.body },
         }
 
         ---@diagnostic disable-next-line: param-type-mismatch
         client:notify('tsserver/response', response_data)
       end)
     end
+
+    client.handlers['tsserver/request'] = typescript_handler
   end,
 }
 

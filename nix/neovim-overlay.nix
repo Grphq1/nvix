@@ -157,6 +157,7 @@ with final.pkgs.lib; let
     lua-language-server
     nixd
     typescript-language-server
+    vtsls
     fixed-vue-language-server # Using fixed version
     typescript
     tailwindcss-language-server
@@ -178,7 +179,6 @@ in {
     plugins = all-plugins;
     inherit extraPackages;
     environmentVariables = {
-      VUE_TSDK = "${pkgs.typescript}/lib/node_modules/typescript/lib";
       VUE_TYPESCRIPT_PLUGIN = "${fixed-vue-language-server}/lib/language-tools/node_modules/.pnpm/node_modules/@vue/language-server";
     };
   };
@@ -192,7 +192,6 @@ in {
     appName = "nvim-dev";
     wrapRc = false;
     environmentVariables = {
-      VUE_TSDK = "${pkgs.typescript}/lib/node_modules/typescript/lib";
       VUE_TYPESCRIPT_PLUGIN = "${fixed-vue-language-server}/lib/language-tools/node_modules/.pnpm/node_modules/@vue/language-server";
     };
   };
