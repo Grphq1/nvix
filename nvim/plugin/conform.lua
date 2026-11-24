@@ -14,10 +14,17 @@ conform.setup {
 
     lua = { 'stylua' },
     nix = { 'alejandra' },
+    rust = { 'rustfmt' },
+    tex = { 'tex-fmt' },
   },
 }
 
 vim.keymap.set('n', '<space>f', function()
+  if vim.bo.filetype == 'vue' and require('user.eslint').formats_with_lint(0) then
+    vim.lsp.buf.format { name = 'eslint', async = true }
+    return
+  end
+
   conform.format {
     async = true,
   }

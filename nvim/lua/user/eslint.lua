@@ -32,6 +32,50 @@ local eslint_root_markers = {
   'eslint.config.cts',
 }
 
+local nuxt_configs = {
+  'nuxt.config.js',
+  'nuxt.config.ts',
+  'nuxt.config.mjs',
+  'nuxt.config.cjs',
+  'nuxt.config.mts',
+  'nuxt.config.cts',
+}
+
+--- Whether the project's ESLint config already handles formatting (stylistic
+--- or antfu rules, or a Nuxt config), so ESLint should be used as the formatter.
+---@param bufnr? integer
+---@return boolean
+function M.formats_with_lint(bufnr)
+  bufnr = bufnr or 0
+
+  if not vim.lsp.get_clients({ bufnr = bufnr, name = 'eslint' })[1] then
+    return false
+  end
+
+  local dir = vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr))
+  if dir == '' then
+    dir = vim.fn.getcwd()
+  end
+
+  if vim.fs.find(nuxt_configs, { path = dir, upward = true })[1] then
+    return true
+  end
+
+  local config = vim.fs.find(eslint_root_markers, { path = dir, upward = true })[1]
+  if not config then
+    return false
+  end
+
+  local ok, lines = pcall(vim.fn.readfile, config)
+  if not ok then
+    return false
+  end
+
+  local text = table.concat(lines, '\n'):lower()
+  return text:find('stylistic', 1, true) ~= nil
+    or text:find('antfu', 1, true) ~= nil
+end
+
 M.setup = function()
   local root_dir = lsp.find_root_dir(eslint_root_markers, nil, true)
 
