@@ -80,6 +80,8 @@ with final.pkgs.lib; let
       p.lua
       p.tsx
       p.nix
+      p.latex
+      p.rust
     ]))
     luasnip # snippets | https://github.com/l3mon4d3/luasnip/
     # nvim-cmp (autocompletion) and extensions
@@ -113,6 +115,7 @@ with final.pkgs.lib; let
     inlinediff-nvim
     lsp-lens
     # language support
+    vimtex # LaTeX compile/view/toc | https://github.com/lervag/vimtex
     # ^ language support
     # navigation/editing enhancement plugins
     vim-unimpaired # predefined ] and [ navigation keymaps | https://github.com/tpope/vim-unimpaired/
@@ -162,6 +165,8 @@ with final.pkgs.lib; let
     typescript
     tailwindcss-language-server
     inputs.unocss-lsp.packages.${system}.default
+    rust-analyzer
+    texlab
     # formatter/linter
     vscode-langservers-extracted
     eslint
@@ -171,6 +176,10 @@ with final.pkgs.lib; let
     oxlint
     oxfmt
     tsgolint
+    rustfmt
+    tex-fmt
+    # TeX distribution + latexmk for vimtex
+    (texliveSmall.withPackages (ps: [ps.latexmk]))
   ];
 in {
   # This is the neovim derivation
