@@ -166,6 +166,8 @@ with final.pkgs.lib; let
     tailwindcss-language-server
     inputs.unocss-lsp.packages.${system}.default
     rust-analyzer
+    rustc
+    cargo
     texlab
     # formatter/linter
     vscode-langservers-extracted
